@@ -8,10 +8,10 @@
 
 %% Public API
 start_link(AgentId) ->
-    gen_server:start_link({local, {brigade_agent, AgentId}}, ?MODULE, AgentId, []).
+    gen_server:start_link({local, AgentId}, ?MODULE, AgentId, []).
 
 execute_task(AgentId, Task) ->
-    gen_server:call({brigade_agent, AgentId}, {execute, Task}).
+    gen_server:call(AgentId, {execute, Task}).
 
 %% gen_server callbacks
 init(AgentId) ->
@@ -19,10 +19,13 @@ init(AgentId) ->
     {ok, #{id => AgentId, state => idle}}.
 
 handle_call({execute, Task}, _From, State) ->
-    %% Replace this with actual task execution logic
-    Result = io:format("Agent ~p executing task ~p~n", [State#{id}, Task]),
+    %% Access the 'id' field in the State map correctly using the '#' notation
+    Result = io:format("Agent ~p executing task ~p~n", [maps:get(id, State), Task]),
+    
     %% Update the state to reflect the task is being executed
     NewState = State#{state => executing},
+    
+    %% Respond with the result
     {reply, {ok, Result}, NewState};
 
 handle_call(_Request, _From, State) ->
