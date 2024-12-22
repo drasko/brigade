@@ -1,4 +1,4 @@
--module(brigade_agent_sup).
+-module(brigade_manager).
 -behaviour(supervisor).
 
 %% API
@@ -18,8 +18,10 @@ init([]) ->
     %% Define the children (agents) that this supervisor will manage
     Children = [
         %% Define agent 1 as a child of the brigade_agent supervisor
-        {brigade_agent_a1, {brigade_agent, start_link, [a1]}, permanent, 5000, worker, [brigade_agent]}
+        {a1, {brigade_agent, start_link, [a1]}, permanent, 5000, worker, [brigade_agent]}
     ],
 
     %% Define the supervision strategy
     {ok, {{one_for_one, 5, 10}, Children}}.
+
+%% internal functions
