@@ -10,7 +10,7 @@
 -export([start/2, stop/1]).
 
 start(_StartType, _StartArgs) ->
-    brigade_config:initialize(),
+    ok = application:ensure_all_started(guanco),
     brigade_sup:start_link().
 
 stop(_State) ->
